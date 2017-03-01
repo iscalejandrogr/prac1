@@ -44,9 +44,28 @@ function onDeviceReady(){
 					var reg=$.parseJSON(datos);
 					var fila=$("#datosTodos");
 					 for(var i in reg){
-					 	fila.append("<tr><td>"+reg[i].Id_Servicios+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direcccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
+					 	fila.html("<tr><td>"+reg[i].Id_Servicios+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direcccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
 					 }
 					$("#tb1").table("refresh");
+				}
+			});
+		});
+
+		/**********Evento para consulta por ID*************/
+		$("#btnConsID").tap(function (){
+			var id=$("#txtIDServ").val();
+
+			$.ajax({
+				type:"POST",
+				url:"http://movilesisc.esy.es/ConsultaID.php",
+				data:"ID="+id,
+				success:function (datos) {
+					var reg=$.parseJSON(datos);
+					var fila=$("#datosID");
+					 for(var i in reg){
+					 	fila.html("<tr><td>"+reg[i].Id_Servicios+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direcccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
+					 }
+					$("#tb2").table("refresh");
 				}
 			});
 		});
@@ -106,6 +125,7 @@ function onDeviceReady(){
 			<ul data-role="listview">
 				<li><a href="#Registrar">Registrar servicios</a></li>	
 				<li><a href="#Consultar">Consultar servicios</a></li>
+				<li><a href="#ConsultarID">Consultar servicios por ID</a></li>
 				<li><a href="#Actualizar">Actualizar servicios</a></li>
 				<li><a href="#Eliminar">Eliminar servicios</a></li>
 			</ul>	
@@ -147,7 +167,7 @@ function onDeviceReady(){
 			<input type="button" id="btnConsServ" value="Consultar Todos los Servicios">
 			<div>
 			<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="tb1">
-				<thead id="datosTodos">
+				<thead>
 					<tr>
 						<th data-priority="1">Id</th>
 						<th data-priority="2">Nombre</th>
@@ -161,6 +181,37 @@ function onDeviceReady(){
 					</tr>
 				</thead>				
 				<tbody id="datosTodos">
+				</tbody>
+			</table>
+			</div>
+		</div>
+		<div data-role="footer">
+			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+		</div>
+	</div>
+	<div data-role="page" id="ConsultarID">
+		<div data-role="header">
+			<p>Consultar servicios por ID</p>
+		</div>	
+		<div data-role="content">
+			<input type="text" id="txtIDServ" placeholder="Escribe el numero de ID del servicio">
+			<input type="button" id="btnConsID" value="Consultar Servicio">
+			<div>
+			<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="tb2">
+				<thead>
+					<tr>
+						<th data-priority="1">Id</th>
+						<th data-priority="2">Nombre</th>
+						<th data-priority="3">Direción</th>
+						<th data-priority="4">RFC</th>
+						<th data-priority="5">Tel:</th>
+						<th data-priority="6">Clasif</th>
+						<th data-priority="7">Foto</th>
+						<th data-priority="8">Lat</th>
+						<th data-priority="9">Long</th>
+					</tr>
+				</thead>				
+				<tbody id="datosID">
 				</tbody>
 			</table>
 			</div>
