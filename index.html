@@ -10,21 +10,24 @@
 <script type="text/javascript">
  var opciones;
  opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
+jQuery.noConflict();
 
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady(){
+	console.log(navigator.camera);
 		/*******Evento para registrar servicios*********/
-		$("#btnGuardar").tap(function (){	
-			var nom=$("#Nombre").val();
-			var dir=$("#Direccion").val();
-			var rfc=$("#RFC").val();
-			var tel=$("#Telefono").val();
-			var clasif=$("#clasificacion").val();
+		jQuery("#btnGuardar").tap(function (){	
+			alert("funciona");
+			var nom=jQuery("#Nombre").val();
+			var dir=jQuery("#Direccion").val();
+			var rfc=jQuery("#RFC").val();
+			var tel=jQuery("#Telefono").val();
+			var clasif=jQuery("#clasificacion").val();
 			var foto="img/fotos/foto1.jpg";
-			var lat=$("#latitud").val();
-			var longit=$("#longitud").val();
+			var lat=jQuery("#latitud").val();
+			var longit=jQuery("#longitud").val();
 			alert("Funciona guardar");								
-			$.ajax({
+			jQuery.ajax({
 				type:"POST",
 				url:"http://movilesisc.esy.es/Guardar.php",
 				data:"Nom="+nom+"&Dir="+dir+"&Rfc="+rfc+"&Tel="+tel+"&Clasif="+clasif+"&Foto="+foto+"&Lat="+lat+"&Long="+longit,
@@ -35,48 +38,81 @@ function onDeviceReady(){
 		});
 
 		/**********Evento para consulta*************/
-		$("#btnConsServ").tap(function (){
-			$.ajax({
+		jQuery("#btnConsServ").tap(function (){
+			jQuery.ajax({
 				type:"POST",
 				url:"http://movilesisc.esy.es/Consulta.php",
 				data:"",
 				success:function (datos) {
-					var reg=$.parseJSON(datos);
-					var fila=$("#datosTodos");
+					var reg=jQuery.parseJSON(datos);
+					var fila=jQuery("#datosTodos");
 					 for(var i in reg){
 					 	fila.html("<tr><td>"+reg[i].Id_Servicios+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direcccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
 					 }
-					$("#tb1").table("refresh");
+					jQuery("#tb1").table("refresh");
 				}
 			});
 		});
 
 		/**********Evento para consulta por ID*************/
-		$("#btnConsID").tap(function (){
-			var id=$("#txtIDServ").val();
+		jQuery("#btnConsID").tap(function (){
+			var id=jQuery("#txtIDServ").val();
 
-			$.ajax({
+			jQuery.ajax({
 				type:"POST",
 				url:"http://movilesisc.esy.es/ConsultaID.php",
 				data:"ID="+id,
 				success:function (datos) {
-					var reg=$.parseJSON(datos);
-					var fila=$("#datosID");
+					var reg=jQuery.parseJSON(datos);
+					var fila=jQuery("#datosID");
 					 for(var i in reg){
 					 	fila.html("<tr><td>"+reg[i].Id_Servicios+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direcccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
 					 }
-					$("#tb2").table("refresh");
+					jQuery("#tb2").table("refresh");
 				}
 			});
 		});
+
+	/*******************Evento eliminar ******************/
+	jQuery("#btnEliminarID").tap(function (){
+		var id=jQuery("#txtIDServE").val();
+		jQuery.ajax({
+			type:"POST",
+			url:"Eliminar.php",
+			data:"ID="+id,
+			success: function (datos){
+				alert(datos);
+			}
+		});
+
+	});	
+	/**********************Evento Actualizar************************/
+	jQuery("#btnConsutIDACT").tap(function (){
+		var id=jQuery("#txtIDServACT").val();
+		jQuery.ajax({
+			type:"POST",
+			//url:"ConsultaID.php",
+			url:"",
+			data:"ID="+id,
+			success: function(datos){
+				var reg=jQuery.parseJSON(datos);
+				var controles=jQuery("#controlesForm");
+				controles.html('<input type="text" id="txtId" >');
+				jQuery("#txtId").val(reg[0].Id_Servicios);
+			}
+		});
+
+	});
+
 	/***********Obtener Coordenadas***********************/
-	$("#btnCords").tap(function(){//Obtener coordenadas para el registro de servicios			
+	jQuery("#btnCords").tap(function(){//Obtener coordenadas para el registro de servicios	
+	alert("Accediendo a la ubiación");		
   		obtenerUbicacion();
 	});
-	$("#btnFoto").tap(function (){//Capturar fotografia
+	jQuery("#btnFoto").tap(function (){//Capturar fotografia
         navigator.device.capture.captureImage(function(mediaFiles){
 		    path = mediaFiles[0].fullPath;
-		    $('#regFoto').append('<img id="imagen" src="'+path+'" width="100%" />').attr('rel',path);
+		    jQuery('#regFoto').append('<img id="imagen" src="'+path+'" width="100%" />').attr('rel',path);
 	      },function(error){
 		        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
 	      },{limit:1});
@@ -84,7 +120,7 @@ function onDeviceReady(){
     	destinationType: Camera.DestinationType.FILE_URI });
 
 		function onSuccess(imageURI) {
-   			$('#regFoto').append('<img id="imagen" src="'+imageURI+'" width="100%" />').attr('rel',imageURI);
+   			jQuery('#regFoto').append('<img id="imagen" src="'+imageURI+'" width="100%" />').attr('rel',imageURI);
 		}
 
 		function onFail(message) {
@@ -98,8 +134,8 @@ function onDeviceReady(){
 
 	  function exito(posic){
 	      //var corUbic=new google.maps.LatLng(posic.coords.latitude, posic.coords.longitude);
-	      $("#latitud").val(posic.coords.latitude);
-	      $("#longitud").val(posic.coords.longitude);	      
+	      jQuery("#latitud").val(posic.coords.latitude);
+	      jQuery("#longitud").val(posic.coords.longitude);	      
 	     }
 
 	      function falla(error){
@@ -126,8 +162,8 @@ function onDeviceReady(){
 				<li><a href="#Registrar">Registrar servicios</a></li>	
 				<li><a href="#Consultar">Consultar servicios</a></li>
 				<li><a href="#ConsultarID">Consultar servicios por ID</a></li>
-				<li><a href="#Actualizar">Actualizar servicios</a></li>
-				<li><a href="#Eliminar">Eliminar servicios</a></li>
+				<li><a href="#ActualizarID">Actualizar servicios</a></li>
+				<li><a href="#EliminarID">Eliminar servicios</a></li>
 			</ul>	
 		</div>
 		<div data-role="footer">
@@ -215,6 +251,51 @@ function onDeviceReady(){
 				</tbody>
 			</table>
 			</div>
+		</div>
+		<div data-role="footer">
+			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+		</div>
+	</div>
+	<div data-role="page" id="EliminarID">
+		<div data-role="header">
+			<p>Eliminar servicios por ID</p>
+		</div>	
+		<div data-role="content">
+			<input type="text" id="txtIDServE" placeholder="Escribe el numero de ID del servicio">
+			<input type="button" id="btnEliminarID" value="Eliminar Servicio">
+			<div>
+			<!--table data-role="table" data-mode="columntoggle" class="ui-responsive" id="tb2">
+				<thead>
+					<tr>
+						<th data-priority="1">Id</th>
+						<th data-priority="2">Nombre</th>
+						<th data-priority="3">Direción</th>
+						<th data-priority="4">RFC</th>
+						<th data-priority="5">Tel:</th>
+						<th data-priority="6">Clasif</th>
+						<th data-priority="7">Foto</th>
+						<th data-priority="8">Lat</th>
+						<th data-priority="9">Long</th>
+					</tr>
+				</thead>				
+				<tbody id="datosID">
+				</tbody>
+			</table-->
+			</div>
+		</div>
+		<div data-role="footer">
+			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+		</div>
+	</div>
+	<div data-role="page" id="ActualizarID">
+		<div data-role="header">
+			<p>Actualizar servicio por ID</p>
+		</div>	
+		<div data-role="content">
+			<input type="text" id="txtIDServACT" placeholder="Escribe el numero de ID del servicio">
+			<input type="button" id="btnConsutIDACT" value="Consultar Servicio">
+			<div id="controlesForm"></div>
+			<input type="button" id="btnActualizar" value="Actualizar servicio">
 		</div>
 		<div data-role="footer">
 			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
