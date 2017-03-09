@@ -133,8 +133,9 @@ function onDeviceReady(){
 
 	  function exito(posic){
 	      //var corUbic=new google.maps.LatLng(posic.coords.latitude, posic.coords.longitude);
-	      jQuery("#latitud").val(posic.coords.latitude);
-	      jQuery("#longitud").val(posic.coords.longitude);	      
+	      document.getElementById("latitud").value = posic.coords.latitude;
+	      document.getElementById("longitud").value = posic.coords.longitude;
+	      alert("Loalizado");	      
 	     }
 
 	      function falla(error){
@@ -186,8 +187,8 @@ function onDeviceReady(){
 			<input type="button" id="btnFoto" value="Tomar foto">
 			<div id="regFoto"></div>
 			<input type="button" id="btnCords" value="Obtener coordenadas">
-			<input type="text" id="latitud" placeholder="Latitud">
-			<input type="text" id="longitud" placeholder="Longitud">
+			<input type="text" id="latitud"  name="latitud" placeholder="Latitud">
+			<input type="text" id="longitud" name="longitud" placeholder="Longitud">
 			<input type="button" id="btnGuardar" value="Guardar servicio">
 		</div>
 		<div data-role="footer">
